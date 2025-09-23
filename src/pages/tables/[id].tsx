@@ -7,6 +7,8 @@ import { useDialogStore } from "@/store/dialogStore";
 import { socket } from "@/lib/socket";
 import { useEffect, useState } from "react";
 import { BookingCalendar } from "@/components/calender/customfullCalender";
+import { isOverlapping } from "@/utils/dateController";
+import { toast } from "sonner";
 
 export default function TablePage() {
   const { id } = useParams<{ id: string }>();
@@ -37,9 +39,16 @@ export default function TablePage() {
   const { setOpen, setSelectedDate } = useDialogStore();
 
   const handleDateClick = (start: string, end: string) => {
-    const formatedStartDate = new Date(start).toString();
-    const formatedEndDate = new Date(end).toString();
-    setSelectedDate({ start: formatedStartDate, end: formatedEndDate });
+    const formatedStartDate = new Date(start);
+    const formatedEndDate = new Date(end);
+    if (isOverlapping(formatedStartDate, formatedEndDate, sessions)) {
+      toast.error("این بازه زمانی با یک جلسه موجود هم‌پوشانی دارد");
+      return;
+    }
+    setSelectedDate({
+      start: formatedStartDate.toString(),
+      end: formatedEndDate.toString(),
+    });
     setOpen(true);
   };
 

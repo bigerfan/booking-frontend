@@ -6,6 +6,7 @@ import interactionPlugin from "@fullcalendar/interaction"; // for selecting time
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css"; // import built-in scale animation
+import type { EventApi } from "@fullcalendar/core";
 // import { Button } from "@/components/ui/button";
 import type {
   DateSelectArg,
@@ -32,26 +33,47 @@ export const BookingCalendar: React.FC<CalendarProps> = ({
 }) => {
   // Render custom event content
   const renderEventContent = (eventInfo: EventContentArg) => {
-    // const color =
-    //   eventInfo.event.extendedProps.type === "meeting"
-    //     ? "bg-blue-500 text-white"
-    //     : eventInfo.event.extendedProps.type === "lunch"
-    //     ? "bg-green-500 text-white"
-    //     : "bg-gray-800 text-white";
+    const invitedPeople = eventInfo.event.extendedProps.invitedPeople || [];
+    const color =
+      !eventInfo.isPast && !eventInfo.isFuture
+        ? "bg-red-600 text-white animate-pulse-slow"
+        : eventInfo.isFuture
+        ? "bg-gray-800 text-white"
+        : "bg-gray-500 text-white";
+
+    // تعیین حداکثر تعداد اسمی که نمایش داده می‌شود
+    const maxVisible = 3;
+    const visiblePeople = invitedPeople.slice(0, maxVisible);
+    const hiddenCount = invitedPeople.length - visiblePeople.length;
 
     return (
       <div
-        className={`p-1 rounded bg-gray-500 text-white text-sm flex flex-col h-full`}
+        className={`p-1 px-2 rounded ${color} text-white text-md flex flex-col h-full`}
       >
         <span className="font-semibold">{eventInfo.event.title}</span>
-        <span>{eventInfo.timeText}</span>
+        <span className="text-sm">{eventInfo.timeText}</span>
+
+        {invitedPeople.length > 0 && (
+          <ul className="mt-1 text-xs list-disc list-inside">
+            {visiblePeople.map(
+              (
+                person: { fullName: string; phoneNumber: string },
+                idx: number
+              ) => (
+                <li key={idx}>{person.fullName}</li>
+              )
+            )}
+            {hiddenCount > 0 && <li>و {hiddenCount} نفر دیگر...</li>}
+          </ul>
+        )}
       </div>
     );
   };
 
-  const createTooltipContent = (event: any) => {
+  const createTooltipContent = (event: EventApi) => {
     const container = document.createElement("div");
-    container.className = "p-2 rounded-lg max-w-xs";
+    container.dir = "rtl";
+    container.className = "p-2 rounded-lg max-w-xs z-40 ";
 
     const title = document.createElement("h3");
     title.className = "font-semibold text-white mb-1";
@@ -107,6 +129,7 @@ export const BookingCalendar: React.FC<CalendarProps> = ({
             arrow: true,
             theme: "light-border",
             inertia: true,
+            appendTo: document.body,
           });
         }}
         selectable={true}
@@ -119,6 +142,8 @@ export const BookingCalendar: React.FC<CalendarProps> = ({
         slotMinTime="08:00:00"
         slotMaxTime="22:00:00"
         slotLabelFormat={{ hour: "2-digit", minute: "2-digit", hour12: false }}
+        selectLongPressDelay={300} // میلی‌ثانیه
+        eventLongPressDelay={300}
       />
     </div>
   );

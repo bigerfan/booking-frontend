@@ -3,6 +3,7 @@ import TablePage from "./pages/tables/[id]";
 import { Button } from "./components/ui/button";
 import { useCallback, useEffect, useState } from "react";
 import { socket } from "./lib/socket";
+import { Toaster } from "./components/ui/sonner";
 
 function Home() {
   const [tables, setTables] = useState<{ tableId: number; count: number }[]>(
@@ -67,11 +68,14 @@ function Home() {
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/table/:id" element={<TablePage />} />
-      </Routes>
-    </Router>
+    <>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/table/:id" element={<TablePage />} />
+        </Routes>
+      </Router>
+      <Toaster richColors />
+    </>
   );
 }
