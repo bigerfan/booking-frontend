@@ -45,6 +45,7 @@ export default function TablePage() {
       toast.error("این بازه زمانی با یک جلسه موجود هم‌پوشانی دارد");
       return;
     }
+    console.log(formatedStartDate.toString());
     setSelectedDate({
       start: formatedStartDate.toString(),
       end: formatedEndDate.toString(),
@@ -76,7 +77,7 @@ export default function TablePage() {
     });
 
     return () => {
-      socket.emit("leave-table", { tableId: id });
+      socket.emit("leave-table", id);
       // socket.disconnect(); // cleanup
     };
   }, [id, setId]);

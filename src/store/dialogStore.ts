@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 import { socket } from "@/lib/socket";
+import { toast } from "sonner";
 
 type InvitedPerson = {
   fullName: string;
@@ -104,6 +105,7 @@ export const useDialogStore = create<DialogState>((set, get) => ({
       });
 
       if (res.status == 200) {
+        toast.success("جلسه با موفقیت ساخته شد");
         resetDialog();
         setOpen(false);
         socket.emit("new-session", tableId);
