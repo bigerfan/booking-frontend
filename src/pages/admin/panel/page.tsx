@@ -14,7 +14,7 @@ const AdminPanel = () => {
   // socket event handlers
   const handleConnect = useCallback(() => {
     console.log("connected to socket");
-    socket.emit("join_overview");
+    socket.emit("join-overview");
   }, []);
 
   const handleTables = useCallback(
@@ -24,7 +24,7 @@ const AdminPanel = () => {
     }) => {
       setTables(data.tableRooms);
       setSessions(data.todaySessions);
-      console.log("tables:", data);
+      // console.log("tables:", data);
     },
     []
   );

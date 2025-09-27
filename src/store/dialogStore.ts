@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import axios from "axios";
 import { socket } from "@/lib/socket";
 import { toast } from "sonner";
+import { apiRoutes, axiosInstance } from "@/utils/axios";
 
 type InvitedPerson = {
   fullName: string;
@@ -53,6 +53,7 @@ export const useDialogStore = create<DialogState>((set, get) => ({
     set({
       step: 1,
       // selectedTime: null,
+      sessionTitle: "",
       invitedPeople: [],
       selectedDate: null,
       sessionDescription: "",
@@ -95,7 +96,7 @@ export const useDialogStore = create<DialogState>((set, get) => ({
     //   return;
     // }
     try {
-      const res = await axios.post("http://localhost:5000/api/session/create", {
+      const res = await axiosInstance.post(apiRoutes.sessions.create, {
         invitedPeople,
         sessionDescription,
         startedTime: selectedDate.start,
@@ -111,6 +112,7 @@ export const useDialogStore = create<DialogState>((set, get) => ({
         socket.emit("new-session", tableId);
       }
     } catch (error) {
+      toast.error("");
       console.log(error);
     }
 

@@ -45,7 +45,7 @@ export default function TablePage() {
       toast.error("این بازه زمانی با یک جلسه موجود هم‌پوشانی دارد");
       return;
     }
-    console.log(formatedStartDate.toString());
+    // console.log(formatedStartDate.toString());
     setSelectedDate({
       start: formatedStartDate.toString(),
       end: formatedEndDate.toString(),
@@ -68,11 +68,11 @@ export default function TablePage() {
     setId(Number(id));
     // socket.connect();
     // socket.on("connect", () => {
-    socket.emit("register_table", id);
+    socket.emit("register-table", id);
     // console.log("connected to socket");
     // });
     socket.on("sessions", (tableSessions) => {
-      console.log(tableSessions);
+      // console.log(tableSessions);
       setSessions(tableSessions);
     });
 
@@ -98,6 +98,8 @@ export default function TablePage() {
         // }))}
       /> */}
       <BookingCalendar
+        initialView="timeGridWeek"
+        views="timeGridWeek,timeGridDay"
         onSelectTime={handleDateClick}
         sessions={sessions.map((session) => {
           const start = new Date(session.started_time);

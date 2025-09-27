@@ -21,87 +21,84 @@ interface Session {
 }
 
 interface CalendarProps {
+  initialView: string;
+  views: string;
   sessions: Session[];
   onSelectTime: (start: string, end: string) => void;
 }
 
+// views: dayGridMonth
+// ,timeGridWeek
+// ,timeGridDay
+
 export const BookingCalendar: React.FC<CalendarProps> = ({
+  initialView,
+  views,
   sessions,
   onSelectTime,
 }) => {
-  // Render custom event content
-  // const renderEventContent = (eventInfo: EventContentArg) => {
-  //   const invitedPeople = eventInfo.event.extendedProps.invitedPeople || [];
-  //   const color =
-  //     !eventInfo.isPast && !eventInfo.isFuture
-  //       ? "bg-red-600 text-white animate-pulse-slow"
-  //       : eventInfo.isFuture
-  //       ? "bg-gray-800 text-white"
-  //       : "bg-gray-500 text-white";
-
-  //   const maxVisible = 3;
-  //   const visiblePeople = invitedPeople.slice(0, maxVisible);
-  //   const hiddenCount = invitedPeople.length - visiblePeople.length;
-
-  //   return (
-  //     <div
-  //       className={`p-1 px-2 rounded ${color} text-white text-md flex flex-col h-full`}
-  //     >
-  //       <span className="font-semibold">{eventInfo.event.title}</span>
-  //       <span className="text-sm">{eventInfo.timeText}</span>
-
-  //       {invitedPeople.length > 0 && (
-  //         <ul className="mt-1 text-xs list-disc list-inside">
-  //           {visiblePeople.map(
-  //             (
-  //               person: { fullName: string; phoneNumber: string },
-  //               idx: number
-  //             ) => (
-  //               <li key={idx}>{person.fullName}</li>
-  //             )
-  //           )}
-  //           {hiddenCount > 0 && <li>و {hiddenCount} نفر دیگر...</li>}
-  //         </ul>
-  //       )}
-  //     </div>
-  //   );
-  // };
-
   const renderEventContent = (eventInfo: EventContentArg) => (
     <EventItem eventInfo={eventInfo} />
   );
 
   const createTooltipContent = (event: EventApi) => {
-    const container = document.createElement("div");
-    container.dir = "rtl";
-    container.className = "p-2 rounded-lg max-w-xs  ";
+    // const container = document.createElement("div");
+    // container.dir = "rtl";
+    // container.className = "p-2 rounded-lg max-w-xs  ";
 
-    const title = document.createElement("h3");
-    title.className = "font-semibold text-white mb-1";
-    title.textContent = event.title;
+    // const title = document.createElement("h3");
+    // title.className = "font-semibold text-white mb-1";
+    // title.textContent = event.title;
 
-    const description = document.createElement("p");
-    description.className = "text-gray-50 text-sm mb-1";
-    description.textContent = event.extendedProps.description;
+    // const description = document.createElement("p");
+    // description.className = "text-gray-50 text-sm mb-1";
+    // description.textContent = event.extendedProps.description;
 
-    const invited = document.createElement("div");
-    invited.className = "text-gray-100 text-sm";
-    invited.textContent =
-      "دعوت‌شدگان: " +
-      event.extendedProps.invitedPeople
-        .map((p: { fullName: string }) => p.fullName)
-        .join(", ");
+    // const invited = document.createElement("div");
+    // invited.className = "text-gray-100 text-sm";
+    // invited.textContent =
+    //   "دعوت‌شدگان: " +
+    //   event.extendedProps.invitedPeople
+    //     .map((p: { fullName: string }) => p.fullName)
+    //     .join(", ");
 
-    container.appendChild(title);
-    container.appendChild(description);
-    container.appendChild(invited);
+    // container.appendChild(title);
+    // container.appendChild(description);
+    // container.appendChild(invited);
 
-    return container;
+    // return container;
+    const invitedNames = event.extendedProps.invitedPeople
+      .map((p: { fullName: string }) => p.fullName)
+      .join(", ");
+    const startTime = new Date(event.start!).toLocaleTimeString("fa-IR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    const endTime = new Date(event.end!).toLocaleTimeString("fa-IR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    return `
+    <div dir="rtl" class="p-3 rounded-xl shadow-lg max-w-sm bg-neutral-700 text-gray-100">
+      <h3 class="font-bold text-lg text-white mb-1 truncate">${event.title}</h3>
+      <div class="text-gray-200 text-sm mb-2">
+         ${startTime} - ${endTime}
+      </div>
+      <p class="text-gray-200 text-sm mb-2 break-words">${
+        event.extendedProps.description || "-"
+      }</p>
+      <div class="text-gray-300 text-sm">
+        <span class="font-semibold">دعوت‌شدگان:</span> ${invitedNames || "-"}
+      </div>
+    </div>
+  `;
   };
 
   // Handle selecting a time slot
   const handleSelect = (selectInfo: DateSelectArg) => {
-    console.log(selectInfo);
+    // console.log(selectInfo);
     if (selectInfo.view.type === "dayGridMonth") return;
     const start = selectInfo.start.toISOString();
     const end = selectInfo.end.toISOString();
@@ -113,11 +110,11 @@ export const BookingCalendar: React.FC<CalendarProps> = ({
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         locale={faLocale}
-        initialView="timeGridWeek"
+        initialView={initialView || "timeGridWeek"}
         headerToolbar={{
           left: "prev,next today",
           center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay",
+          right: views,
         }}
         eventDidMount={(info) => {
           const tooltipContent = createTooltipContent(info.event);
@@ -133,6 +130,7 @@ export const BookingCalendar: React.FC<CalendarProps> = ({
             theme: "light-border",
             inertia: true,
             appendTo: document.body,
+            trigger: "mouseenter focus click",
           });
         }}
         selectable={true}
