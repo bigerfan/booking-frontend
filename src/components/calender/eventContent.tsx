@@ -1,15 +1,23 @@
+import { useBannerStore } from "@/store/bannerStore";
 import type { EventContentArg } from "@fullcalendar/core/index.js";
 import { useEffect, useRef, useState } from "react";
 
 export const EventItem = ({ eventInfo }: { eventInfo: EventContentArg }) => {
   const { view, event } = eventInfo;
   const invitedPeople = eventInfo?.event?.extendedProps?.invitedPeople || [];
-  const color =
-    !eventInfo?.isPast && !eventInfo?.isFuture
-      ? "bg-red-600 text-white animate-pulse-slow"
-      : eventInfo.isFuture
-      ? "bg-gray-800 text-white"
-      : "bg-gray-500 text-white";
+  // const setCurrentSession = useBannerStore((state) => state.setCurrentSession);
+  const currentSession = useBannerStore((state) => state.currentSession);
+
+  const [isCurrentSession, setIsCurrentSession] = useState<boolean>(false);
+
+  // const isCurrentSession =
+  //   !eventInfo?.isPast && !eventInfo?.isFuture ? eventInfo.timeText : false;
+
+  const color = isCurrentSession
+    ? "bg-red-600 text-white animate-pulse-slow"
+    : eventInfo.isFuture
+    ? "bg-gray-800 text-white"
+    : "bg-gray-500 text-white";
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [maxVisible, setMaxVisible] = useState(invitedPeople.length);
@@ -21,7 +29,16 @@ export const EventItem = ({ eventInfo }: { eventInfo: EventContentArg }) => {
       const availableLines = Math.floor(containerHeight / lineHeight) - 3;
       setMaxVisible(Math.max(0, availableLines));
     }
+    // if (isCurrentSession) setCurrentSession(eventInfo.timeText);
   }, [invitedPeople?.length]);
+
+  useEffect(() => {
+    setIsCurrentSession(
+      currentSession && !eventInfo?.isPast && !eventInfo?.isFuture
+        ? true
+        : false
+    );
+  }, [currentSession, setIsCurrentSession]);
 
   const visiblePeople = invitedPeople?.slice(0, maxVisible);
   const hiddenCount = invitedPeople?.length - visiblePeople?.length;

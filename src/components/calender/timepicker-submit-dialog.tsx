@@ -34,10 +34,14 @@ export const TimePickerSubmitDialog = () =>
       // nextStep,
     } = useDialogStore();
 
+    // console.log(selectedDate);
+
     const persianDate = dayjs(selectedDate?.start)
       .calendar("jalali")
       .locale("fa")
       .format("YYYY/MM/DD");
+
+    // console.log(persianDate);
 
     const startedHour = dayjs(selectedDate?.start)
       .calendar("jalali")
@@ -51,6 +55,7 @@ export const TimePickerSubmitDialog = () =>
 
     useEffect(() => {
       if (!open) resetDialog();
+      return;
     }, [open, resetDialog]);
 
     // const renderFirstStep = (

@@ -102,6 +102,8 @@ export const BookingCalendar: React.FC<CalendarProps> = ({
     if (selectInfo.view.type === "dayGridMonth") return;
     const start = selectInfo.start.toISOString();
     const end = selectInfo.end.toISOString();
+    // console.log(start);
+    // console.log(end);
     onSelectTime(start, end);
   };
 
