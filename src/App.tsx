@@ -3,6 +3,7 @@ import TablePage from "./pages/tables/[id]";
 import { Button } from "./components/ui/button";
 import { Toaster } from "./components/ui/sonner";
 import AdminPanel from "./pages/admin/panel/page";
+import FullscreenButton from "./components/fullscreenButton";
 
 function Home() {
   const tables = [{ tableId: 1 }, { tableId: 2 }, { tableId: 3 }];
@@ -11,6 +12,7 @@ function Home() {
 
   return (
     <div className="p-6 bg-transparent">
+      <FullscreenButton />
       <h2 className="text-2xl font-bold mb-4">انتخاب میز</h2>
       {tables.length === 0 ? (
         <p className="text-gray-500">هیچ میزی در دسترس نیست</p>
