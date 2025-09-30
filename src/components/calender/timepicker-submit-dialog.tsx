@@ -106,7 +106,7 @@ export const TimePickerSubmitDialog = () =>
           //   zIndex: 10001,
           //   overflow: "auto",
           // }}
-          className="overflow-auto translate-y-0 top-5"
+          className="overflow-auto translate-y-0 top-5 light-scroll"
           style={{
             maxHeight: vh * 0.9, // 90% of available space
             WebkitOverflowScrolling: "touch",

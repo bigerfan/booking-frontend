@@ -1,0 +1,53 @@
+.fc {
+  font-family: "Inter", sans-serif;
+  color: #1f2937 !important; /* Tailwind gray-800 */
+}
+
+.fc .fc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center !important;
+  margin-bottom: 0.75rem;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827 !important; /* darker title */
+}
+
+.fc button {
+  background-color: #e5e7eb !important; /* Tailwind gray-200 */
+  color: #374151 !important; /* Tailwind gray-700 */
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.fc button:hover {
+  background-color: #d1d5db !important; /* gray-300 */
+}
+
+.fc .fc-col-header-cell-cushion {
+  color: #374151 !important;
+  font-weight: 550 !important;
+  font-size: 1rem !important;
+  text-transform: uppercase;
+}
+
+.fc .fc-timegrid-event-harness {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.fc {
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.fc-event {
+  background: transparent !important;
+  border: none !important;
+}

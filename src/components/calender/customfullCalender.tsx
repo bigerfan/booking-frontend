@@ -11,6 +11,7 @@ import type { EventApi, EventContentArg } from "@fullcalendar/core";
 import type { DateSelectArg } from "@fullcalendar/core/index.js";
 import faLocale from "@fullcalendar/core/locales/fa";
 import { EventItem } from "./eventContent";
+import "./calender.css";
 
 interface Session {
   id: string;

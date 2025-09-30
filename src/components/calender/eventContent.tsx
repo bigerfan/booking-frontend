@@ -40,8 +40,12 @@ export const EventItem = ({ eventInfo }: { eventInfo: EventContentArg }) => {
     );
   }, [currentSession, setIsCurrentSession]);
 
-  const visiblePeople = invitedPeople?.slice(0, maxVisible);
-  const hiddenCount = invitedPeople?.length - visiblePeople?.length;
+  let visiblePeople = invitedPeople?.slice(0, maxVisible);
+  let hiddenCount = invitedPeople?.length - visiblePeople?.length;
+  if (hiddenCount === 1) {
+    visiblePeople = invitedPeople;
+    hiddenCount = 0;
+  }
 
   const start = event.start
     ? event.start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
@@ -54,7 +58,7 @@ export const EventItem = ({ eventInfo }: { eventInfo: EventContentArg }) => {
       {(view.type == "timeGridWeek" || view.type == "timeGridDay") && (
         <div
           ref={containerRef}
-          className={`py-[2px] px-2 rounded ${color} text-white text-md flex flex-col h-full overflow-hidden`}
+          className={`py-[5px] px-2 rounded ${color} text-white text-md flex flex-col h-full overflow-hidden`}
         >
           <span className="font-semibold">{event.title}</span>
           <span className="text-sm">{eventInfo?.timeText}</span>

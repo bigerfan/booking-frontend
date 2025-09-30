@@ -77,7 +77,7 @@ export const InviteSessionForm = () => {
         {invitedPeople.length === 0 ? (
           <p className="text-sm text-gray-500">هیچ فردی اضافه نشده است.</p>
         ) : (
-          <ul className="px-4 py-3 space-y-3 bg-gray-50 rounded-xl shadow-sm border border-gray-200 max-h-64 overflow-y-auto invited-scroll">
+          <ul className="px-4 py-3 space-y-3 bg-gray-50 rounded-xl shadow-sm border border-gray-200 max-h-64 overflow-y-auto light-scroll">
             {invitedPeople.map((invited, index) => (
               <li
                 key={invited.phoneNumber}
