@@ -1,24 +1,26 @@
 import { useEffect, useState } from "react";
 
 export function useViewportHeight() {
-  const [height, setHeight] = useState(
-    window.visualViewport?.height ?? window.innerHeight
-  );
+  const [vh, setVh] = useState(window.innerHeight);
 
   useEffect(() => {
-    const viewport = window.visualViewport;
+    function handleResize() {
+      if (window.visualViewport) {
+        setVh(window.visualViewport.height);
+      } else {
+        setVh(window.innerHeight);
+      }
+    }
 
-    if (!viewport) return;
+    handleResize();
+    window.visualViewport?.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize);
 
-    const handleResize = () => setHeight(viewport.height);
-
-    viewport.addEventListener("resize", handleResize);
-    viewport.addEventListener("scroll", handleResize); // sometimes keyboard triggers scroll
     return () => {
-      viewport.removeEventListener("resize", handleResize);
-      viewport.removeEventListener("scroll", handleResize);
+      window.visualViewport?.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  return height;
+  return vh;
 }

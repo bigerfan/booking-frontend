@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { InviteSessionForm } from "./dialog/invite-session-form";
 import { useDialogStore } from "@/store/dialogStore";
 import dayjs from "../../utils/dayjs";
-// import { useViewportHeight } from "@/hooks/useViewPortHeight";
+import { useViewportHeight } from "@/hooks/useViewPortHeight";
 
 // type dialogProps = {
 //   open: boolean;
@@ -87,37 +87,42 @@ export const TimePickerSubmitDialog = () =>
 
     // );
 
-    // const vh = useViewportHeight();
+    const vh = useViewportHeight();
 
     return (
-      <Dialog open={open} onOpenChange={setOpen} modal={false}>
-        <div
+      <Dialog open={open} onOpenChange={setOpen} modal={true}>
+        {/* <div
           className={` ${
             open ? "fixed" : "hidden"
           } bg-black w-full h-screen top-0 left-0 z-[10000] opacity-70 backdrop-blur-3xl`}
+        > */}
+        <DialogContent
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          // className="sm:max-w-[80dvh] overflow-auto"
+          // style={{
+          //   WebkitOverflowScrolling: "touch",
+          //   maxHeight: `100vh`,
+          //   // top: 0,
+          //   zIndex: 10001,
+          //   overflow: "auto",
+          // }}
+          className="overflow-auto translate-y-0 top-5"
+          style={{
+            maxHeight: vh * 0.9, // 90% of available space
+            WebkitOverflowScrolling: "touch",
+          }}
         >
-          <DialogContent
-            onOpenAutoFocus={(e) => e.preventDefault()}
-            // className="sm:max-w-[80dvh] overflow-auto"
-            style={{
-              WebkitOverflowScrolling: "touch",
-              maxHeight: `100vh`,
-              // top: 0,
-              zIndex: 10001,
-              overflow: "auto",
-            }}
-          >
-            <DialogHeader>
-              <DialogTitle>
-                تنظیم جلسه برای {persianDate} در ساعت {startedHour}-{endHour}
-              </DialogTitle>
-            </DialogHeader>
-            {/* {step === 1 && renderFirstStep} */}
-            {/* {step === 2 &&  */}
-            <InviteSessionForm />
-            {/* // } */}
-          </DialogContent>
-        </div>
+          <DialogHeader>
+            <DialogTitle>
+              تنظیم جلسه برای {persianDate} در ساعت {startedHour}-{endHour}
+            </DialogTitle>
+          </DialogHeader>
+          {/* {step === 1 && renderFirstStep} */}
+          {/* {step === 2 &&  */}
+          <InviteSessionForm />
+          {/* // } */}
+        </DialogContent>
+        {/* </div> */}
       </Dialog>
     );
   };

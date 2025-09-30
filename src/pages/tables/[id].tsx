@@ -10,6 +10,7 @@ import { Banner } from "@/components/banner/banner";
 import { useBannerStore } from "@/store/bannerStore";
 import { useGetCurrentSession } from "@/hooks/useGetCurrentSession";
 import dayjs from "../../utils/dayjs";
+import { Header } from "@/components/header/header";
 
 export default function TablePage() {
   const { id } = useParams<{ id: string }>();
@@ -122,7 +123,11 @@ export default function TablePage() {
       <div
         className={`p-6 ${showBanner && currentSession ? "hidden" : "block"}`}
       >
-        <h1 className="text-xl font-bold mb-4">رزرو میز {id}</h1>
+        {/* <div className="flex justify-between ">
+          <h1 className="text-xl font-bold mb-4">رزرو میز {id}</h1>
+          <FullscreenButton />
+        </div> */}
+        <Header pageTitle={`رزرو میز ${id}`} />
 
         <BookingCalendar
           initialView="timeGridWeek"

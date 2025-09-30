@@ -1,3 +1,4 @@
+import { Header } from "@/components/header/header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { socket } from "@/lib/socket";
@@ -46,6 +47,7 @@ const AdminPanel = () => {
   return (
     <div className="p-6 bg-transparent space-y-10">
       {/* Active tables */}
+      <Header pageTitle="پنل ادمین" />
       <section>
         <h2 className="text-2xl font-bold mb-4">میزهای فعال</h2>
         {tables.length === 0 ? (
