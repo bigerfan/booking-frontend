@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { socket } from "@/lib/socket";
 import { toast } from "sonner";
-import { apiRoutes, axiosInstance } from "@/utils/axios";
+import { createSession } from "@/lib/actions";
 
 type InvitedPerson = {
   fullName: string;
@@ -9,7 +9,7 @@ type InvitedPerson = {
 };
 
 type DialogState = {
-  tableId: number | null;
+  tableId: string | null;
   open: boolean;
   step: number;
   selectedDate: { start: string; end: string } | null;
@@ -26,7 +26,7 @@ type DialogState = {
   setStep: (step: number) => void;
   nextStep: () => void;
   prevStep: () => void;
-  setTableId: (id: number) => void;
+  setTableId: (id: string) => void;
   setSelectedDate: (date: { start: string; end: string } | null) => void;
   setSessionTitle: (text: string) => void;
   // setSelectedTime: (time: { start: string; end: string } | null) => void;
@@ -44,8 +44,8 @@ export const useDialogStore = create<DialogState>((set, get) => ({
   selectedDate: null,
   selectedTime: null,
   invitedPeople: [],
-  sessionDescription: "",
-  sessionTitle: "",
+  sessionDescription: "بررسی پروژه",
+  sessionTitle: "بررسی پروژه",
 
   setOpen: (open) => set({ open }),
   setFormLoading: (state) => set({ formLoading: state }),
@@ -53,10 +53,10 @@ export const useDialogStore = create<DialogState>((set, get) => ({
     set({
       step: 1,
       // selectedTime: null,
-      sessionTitle: "",
+      sessionTitle: "بررسی پروژه",
       invitedPeople: [],
       selectedDate: null,
-      sessionDescription: "",
+      sessionDescription: "بررسی پروژه",
     }),
   setSessionTitle: (text) =>
     set({
@@ -88,7 +88,8 @@ export const useDialogStore = create<DialogState>((set, get) => ({
       sessionTitle,
     } = get();
     setFormLoading(true);
-    if (!selectedDate?.start || !selectedDate?.end) return;
+    if (!selectedDate?.start || !selectedDate?.end || !sessionTitle || !tableId)
+      return;
 
     // const sessionDate = new Date(`${selectedDate}T${selectedTime}:00`);
     // if (!sessionDate) {
@@ -96,20 +97,19 @@ export const useDialogStore = create<DialogState>((set, get) => ({
     //   return;
     // }
     try {
-      const res = await axiosInstance.post(apiRoutes.sessions.create, {
+      const res = await createSession({
         invitedPeople,
         sessionDescription,
-        startedTime: selectedDate.start,
-        endTime: selectedDate.end,
-        title: sessionTitle,
+        selectedDate,
+        sessionTitle,
         tableId,
       });
 
-      if (res.status == 200) {
+      if (res?.status == 200) {
         toast.success("جلسه با موفقیت ساخته شد");
         resetDialog();
         setOpen(false);
-        socket.emit("new-session", tableId);
+        socket.emit("update-session", tableId);
       }
     } catch (error) {
       toast.error("");

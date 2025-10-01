@@ -1,8 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import TablePage from "./pages/tables/[id]";
+import TablePage from "./pages/table/[id]";
 import { Button } from "./components/ui/button";
 import { Toaster } from "./components/ui/sonner";
 import AdminPanel from "./pages/admin/panel/page";
+import AdminTableView from "./pages/admin/table/[id]";
 
 function Home() {
   const tables = [{ tableId: 1 }, { tableId: 2 }, { tableId: 3 }];
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/table/:id" element={<TablePage />} />
           <Route path="/admin/panel" element={<AdminPanel />} />
+          <Route path="/admin/table/:id" element={<AdminTableView />} />
         </Routes>
       </Router>
       <Toaster richColors />

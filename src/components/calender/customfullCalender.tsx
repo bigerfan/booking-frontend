@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // for selecting time slots
 import tippy from "tippy.js";
+import type { Instance as TippyInstance } from "tippy.js";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css"; // import built-in scale animation
 import type { EventApi, EventContentArg } from "@fullcalendar/core";
@@ -12,6 +13,12 @@ import type { DateSelectArg } from "@fullcalendar/core/index.js";
 import faLocale from "@fullcalendar/core/locales/fa";
 import { EventItem } from "./eventContent";
 import "./calender.css";
+import { useLocation } from "react-router-dom";
+import { createRoot } from "react-dom/client";
+import { Button } from "../ui/button";
+import { DeleteSession } from "@/lib/actions";
+import { socket } from "@/lib/socket";
+import { useDialogStore } from "@/store/dialogStore";
 
 interface Session {
   id: string;
@@ -42,59 +49,81 @@ export const BookingCalendar: React.FC<CalendarProps> = ({
     <EventItem eventInfo={eventInfo} />
   );
 
-  const createTooltipContent = (event: EventApi) => {
-    // const container = document.createElement("div");
-    // container.dir = "rtl";
-    // container.className = "p-2 rounded-lg max-w-xs  ";
+  const tableId = useDialogStore((state) => state.tableId);
 
-    // const title = document.createElement("h3");
-    // title.className = "font-semibold text-white mb-1";
-    // title.textContent = event.title;
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
-    // const description = document.createElement("p");
-    // description.className = "text-gray-50 text-sm mb-1";
-    // description.textContent = event.extendedProps.description;
+  const location = useLocation();
 
-    // const invited = document.createElement("div");
-    // invited.className = "text-gray-100 text-sm";
-    // invited.textContent =
-    //   "دعوت‌شدگان: " +
-    //   event.extendedProps.invitedPeople
-    //     .map((p: { fullName: string }) => p.fullName)
-    //     .join(", ");
+  useEffect(() => {
+    setIsAdmin(location.pathname.startsWith("/admin"));
+  }, []);
 
-    // container.appendChild(title);
-    // container.appendChild(description);
-    // container.appendChild(invited);
+  const TooltipContent = ({
+    event,
+    isAdmin,
+    instance,
+  }: {
+    event: EventApi;
+    isAdmin: boolean;
+    instance: TippyInstance;
+  }) => {
+    // const deleteProduct = () => {
+    //   alert("deleted");
+    // };
 
-    // return container;
     const invitedNames = event.extendedProps.invitedPeople
       .map((p: { fullName: string }) => p.fullName)
       .join(", ");
+
     const startTime = new Date(event.start!).toLocaleTimeString("fa-IR", {
       hour: "2-digit",
       minute: "2-digit",
     });
-
     const endTime = new Date(event.end!).toLocaleTimeString("fa-IR", {
       hour: "2-digit",
       minute: "2-digit",
     });
 
-    return `
-    <div dir="rtl" class="p-3 rounded-xl shadow-lg max-w-sm bg-neutral-700 text-gray-100">
-      <h3 class="font-bold text-lg text-white mb-1 truncate">${event.title}</h3>
-      <div class="text-gray-200 text-sm mb-2">
-         ${startTime} - ${endTime}
+    // console.log(event.id);
+
+    return (
+      <div
+        dir="rtl"
+        className={`p-3 rounded-xl shadow-lg max-w-sm bg-neutral-700 text-gray-100`}
+      >
+        <h3 className="font-bold text-lg text-white mb-1 truncate">
+          {event.title}
+        </h3>
+        <div className="text-gray-200 text-sm mb-2">
+          {startTime} - {endTime}
+        </div>
+        <p className="text-gray-200 text-sm mb-2 break-words">
+          {event.extendedProps.description || "-"}
+        </p>
+        <div className="text-gray-300 text-sm">
+          <span className="font-semibold">دعوت‌شدگان:</span>{" "}
+          {invitedNames || "-"}
+        </div>
+        {isAdmin && (
+          <div className="w-fit mx-auto my-2">
+            <Button
+              variant="destructive"
+              onClick={async () => {
+                const res = await DeleteSession(event.id);
+                if (res?.status == 200) {
+                  instance.destroy();
+                  socket.emit("update-session", tableId);
+                }
+              }}
+              // className="bg-red-400 py-1 px-2 rounded-sm hover:bg-red-500 hover:ring-1 hover:ring-red-300 transition-all"
+            >
+              حذف جلسه
+            </Button>
+          </div>
+        )}
       </div>
-      <p class="text-gray-200 text-sm mb-2 break-words">${
-        event.extendedProps.description || "-"
-      }</p>
-      <div class="text-gray-300 text-sm">
-        <span class="font-semibold">دعوت‌شدگان:</span> ${invitedNames || "-"}
-      </div>
-    </div>
-  `;
+    );
   };
 
   // Handle selecting a time slot
@@ -120,10 +149,11 @@ export const BookingCalendar: React.FC<CalendarProps> = ({
           right: views,
         }}
         eventDidMount={(info) => {
-          const tooltipContent = createTooltipContent(info.event);
+          const container = document.createElement("div");
+          const root = createRoot(container);
 
-          tippy(info.el, {
-            content: tooltipContent,
+          const instance = tippy(info.el, {
+            content: container,
             allowHTML: true,
             interactive: true,
             placement: "top",
@@ -135,6 +165,13 @@ export const BookingCalendar: React.FC<CalendarProps> = ({
             appendTo: document.body,
             trigger: "mouseenter focus click",
           });
+          root.render(
+            <TooltipContent
+              event={info.event}
+              isAdmin={isAdmin}
+              instance={instance}
+            />
+          );
         }}
         selectable={true}
         select={handleSelect}

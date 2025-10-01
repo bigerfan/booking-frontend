@@ -55,7 +55,7 @@ const AdminPanel = () => {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {tables.map(({ tableId, count }) => (
-              <Link key={tableId} to={`/table/${tableId}`}>
+              <Link key={tableId} to={`/admin/table/${tableId}`}>
                 <Button className="relative w-full h-20 rounded-xl shadow-lg">
                   <div className="text-lg">میز {tableId}</div>
                   <span className="absolute bottom-2 text-sm opacity-80">

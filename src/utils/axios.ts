@@ -4,6 +4,7 @@ export const apiRoutes = {
   serverUrl: import.meta.env.VITE_SERVER_URL || "http://localhost:5000",
   sessions: {
     create: "/api/session/create",
+    delete: "/api/session/delete",
   },
 };
 
