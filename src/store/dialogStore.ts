@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { socket } from "@/lib/socket";
+// import { socket } from "@/lib/socket";
 import { toast } from "sonner";
 import { createSession } from "@/lib/actions";
 
@@ -109,7 +109,7 @@ export const useDialogStore = create<DialogState>((set, get) => ({
         toast.success("جلسه با موفقیت ساخته شد");
         resetDialog();
         setOpen(false);
-        socket.emit("update-session", tableId);
+        // socket.emit("update-session", tableId);
       }
     } catch (error) {
       toast.error("");

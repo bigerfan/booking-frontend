@@ -4,6 +4,7 @@ import { useDialogStore } from "@/store/dialogStore";
 import { useRef } from "react";
 import { Trash2, Plus } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { persianToLatinNumbers } from "@/lib/utils";
 
 export const InviteSessionForm = () => {
   const {
@@ -27,7 +28,7 @@ export const InviteSessionForm = () => {
 
     addInvitedPerson({
       fullName: fullName.current.value.trim(),
-      phoneNumber: phoneNumber.current.value.trim(),
+      phoneNumber: persianToLatinNumbers(phoneNumber.current.value.trim()),
     });
 
     // clear fields after adding
@@ -116,6 +117,7 @@ export const InviteSessionForm = () => {
           value={sessionDescription}
           onChange={(e) => setSessionDescription(e.target.value)}
           className="resize-none"
+          onFocus={(e) => e.preventDefault()}
         />
       </div>
 

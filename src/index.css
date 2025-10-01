@@ -9,6 +9,10 @@
   }
 }
 
+* {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
 /* Thin scrollbar */
 .light-scroll::-webkit-scrollbar {
   width: 4px;
@@ -31,6 +35,7 @@
 
 body {
   background-color: #f9fafb;
+  overscroll-behavior: contain;
   /* max-height: 50px !important;
   overflow: hidden !important; */
 }
