@@ -17,8 +17,8 @@ import { useLocation } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import { Button } from "../ui/button";
 import { DeleteSession } from "@/lib/actions";
-import { socket } from "@/lib/socket";
-import { useDialogStore } from "@/store/dialogStore";
+// import { socket } from "@/lib/socket";
+// import { useDialogStore } from "@/store/dialogStore";
 
 interface Session {
   id: string;
@@ -49,7 +49,7 @@ export const BookingCalendar: React.FC<CalendarProps> = ({
     <EventItem eventInfo={eventInfo} />
   );
 
-  const tableId = useDialogStore((state) => state.tableId);
+  // const tableId = useDialogStore((state) => state.tableId);
 
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
@@ -113,7 +113,7 @@ export const BookingCalendar: React.FC<CalendarProps> = ({
                 const res = await DeleteSession(event.id);
                 if (res?.status == 200) {
                   instance.destroy();
-                  socket.emit("update-session", tableId);
+                  // socket.emit("update-session", tableId);
                 }
               }}
               // className="bg-red-400 py-1 px-2 rounded-sm hover:bg-red-500 hover:ring-1 hover:ring-red-300 transition-all"

@@ -35,10 +35,13 @@ export const useCalenderState = (id: string = "0") => {
   useEffect(() => {
     setId(id);
     // socket.connect();
-    // socket.on("connect", () => {
+    socket.on("connect", () => {
+      console.log("connected to socket");
+    });
+    socket.on("disconnect", () => {
+      console.log("disconnected from socket");
+    });
     socket.emit("register-table", id);
-    // console.log("connected to socket");
-    // });
     socket.on("sessions", (tableSessions) => {
       // console.log(tableSessions);
       setSessions(tableSessions);
@@ -48,6 +51,7 @@ export const useCalenderState = (id: string = "0") => {
 
     return () => {
       socket.emit("leave-table", id);
+      socket.off("sessions");
       // socket.disconnect(); // cleanup
     };
   }, [id, setId]);

@@ -38,7 +38,7 @@ export const EventItem = ({ eventInfo }: { eventInfo: EventContentArg }) => {
         ? true
         : false
     );
-  }, [currentSession, setIsCurrentSession]);
+  }, [currentSession, setIsCurrentSession, eventInfo?.isFuture]);
 
   let visiblePeople = invitedPeople?.slice(0, maxVisible);
   let hiddenCount = invitedPeople?.length - visiblePeople?.length;
@@ -58,7 +58,7 @@ export const EventItem = ({ eventInfo }: { eventInfo: EventContentArg }) => {
       {(view.type == "timeGridWeek" || view.type == "timeGridDay") && (
         <div
           ref={containerRef}
-          className={`py-[5px] px-2 rounded ${color} text-white text-md flex flex-col h-full overflow-hidden`}
+          className={`py-[2px] px-2 rounded ${color} text-white text-md flex flex-col h-full overflow-hidden`}
         >
           <span className="font-semibold">{event.title}</span>
           <span className="text-sm">{eventInfo?.timeText}</span>
@@ -73,7 +73,12 @@ export const EventItem = ({ eventInfo }: { eventInfo: EventContentArg }) => {
                   <li key={idx}>{person?.fullName}</li>
                 )
               )}
-              {hiddenCount > 0 && <li>و {hiddenCount} نفر دیگر...</li>}
+              {hiddenCount > 0 && visiblePeople.length > 0 && (
+                <li>و {hiddenCount} نفر دیگر...</li>
+              )}
+              {hiddenCount > 0 && visiblePeople.length == 0 && (
+                <li> {hiddenCount} نفر دعوت شده</li>
+              )}
             </ul>
           )}
         </div>
